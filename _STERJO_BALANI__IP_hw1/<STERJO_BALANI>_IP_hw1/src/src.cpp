@@ -4,6 +4,9 @@
 #include <string>
 #include <string.h>
 
+#include <opencv4/opencv2/opencv.hpp>
+#include <opencv4/opencv2/highgui.hpp>
+
 using namespace std;
 
 
@@ -65,10 +68,10 @@ vector< vector<int> > pad_array(vector< vector<int> > img, vector< vector<int> >
 			}
 			else{
 				if(opt == 'd'){
-					v[i].push_back(-1);
+					v[i].push_back(0);
 				}
 				else if(opt == 'e'){
-					v[i].push_back(256);
+					v[i].push_back(255);
 				}
 				else{
 					cout << "Unsupported functionality\n";
@@ -94,7 +97,7 @@ void print_image(vector< vector<int> > cp){
 vector< vector<int> > dilation(vector< vector<int> > img, vector< vector<int> > se){
 	int max = -1;
 	
-	vector< vector<int> > v = pad_array(img,se,'d');
+	vector< vector<int> > v = pad_array(img, se, 'd');
 	vector< vector<int> > cp = img;
 	
 	
@@ -119,7 +122,7 @@ vector< vector<int> > dilation(vector< vector<int> > img, vector< vector<int> > 
 vector< vector<int> > erosion(vector< vector<int> > img, vector< vector<int> > se){
 	int min = 256;
 
-	vector< vector<int> > v = pad_array(img,se,'e');
+	vector< vector<int> > v = pad_array(img, se, 'e');
 	vector< vector<int> > cp = img;
 	
 	
@@ -174,7 +177,17 @@ vector< vector<int> > load_data(string filename){
 	return a;
 }
 
-
+void write_into_image(string filename, vector< vector<int> > cp){
+	vector<uint8_t> vec;
+	for(unsigned int i = 0; i < cp.size(); i++){
+		for(unsigned int j = 0; j < cp[0].size(); j++){
+			vec.push_back(cp[i][j]);
+		}
+	}
+	cv::Mat grayImage(cp[0].size(), cp.size(), CV_8U, vec.data()); //check reverse of size position
+	filename.replace(filename.length() - 3, filename.length(), "png");
+	cv::imwrite(filename, grayImage);
+}
 
 int main(int argc, const char *argv[]) {
 	vector< vector<int> > SE, image;
@@ -183,18 +196,24 @@ int main(int argc, const char *argv[]) {
 	SE = load_data(argv[2]);
 	image = load_data(argv[3]);
 	
-	if(strcmp(argv[1],"e") == 0){
-		write_into_file(argv[4], erosion(image,SE));
+	switch(argv[1][0]){
+		case 'e':
+			image = erosion (image,SE);
+			break;
+		case 'd':
+			image = dilation(image,SE);
+			break;
+		case 'o':
+			image = opening (image,SE);
+			break;
+		default:
+			cout << "No optionality matches\nExiting...\n";
+			exit(1);
 	}
-	else if(strcmp(argv[1],"d") == 0){
-		write_into_file(argv[4], dilation(image,SE));
-	}
-	else if(strcmp(argv[1],"o") == 0){
-		write_into_file(argv[4], opening(image,SE));
-	}
-	else{
-		cout << "No optionality matches\nExiting...\n";
-		exit(1);
+
+	write_into_file(argv[4], image);
+	if(strcmp(argv[3], "../input/f3.txt") == 0 || strcmp(argv[3], "../output/ef3_e3.txt") == 0 || strcmp(argv[3], "../output/ef3_e4.txt") == 0){
+		write_into_image(argv[4], image);
 	}
 
 	return 0;

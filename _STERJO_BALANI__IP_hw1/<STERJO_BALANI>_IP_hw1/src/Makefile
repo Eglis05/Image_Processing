@@ -34,4 +34,4 @@ ex1: compile
 	./executable e ../input/SE1.txt ../input/f1.txt ../output/ef1_e1.txt
 
 compile: src.cpp
-	g++ -Wall -std=c++11 -o executable src.cpp  
+	g++ -Wall -std=c++11 src.cpp `pkg-config --libs --cflags opencv` -o executable 
