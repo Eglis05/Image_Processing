@@ -10,19 +10,19 @@ using namespace std;
 void write_into_file(string filename, vector< vector<int> > cp){
 	fstream fout;
 
-	fout.open(filename,fstream::out);
+	fout.open(filename, fstream::out);
 	if(!fout.good()){
-		cerr<<"Sth wrong with the output filestream\n";
+		cerr << "Sth wrong with the output filestream\n";
 		exit(1);
 	}
 
-	for(int i=0;i<cp.size();i++){
-		for(int j=0;j<cp[0].size()-1;j++){
-			fout<<cp[i][j]<< ", ";
+	for(unsigned int i = 0; i < cp.size(); i++){
+		for(unsigned int j = 0; j < cp[0].size()-1; j++){
+			fout << cp[i][j] << ", ";
 		}
-		fout<<cp[i][cp[0].size()-1];
-		if(i<cp.size()-1){
-			fout<<endl;
+		fout << cp[i][cp[0].size()-1];
+		if(i < cp.size()-1){
+			fout << endl;
 		}
 
 	}
@@ -30,13 +30,12 @@ void write_into_file(string filename, vector< vector<int> > cp){
 }
 
 vector< vector<int> > reflect(vector< vector<int> > matrix){
-	int N = matrix.size();
-	int M = matrix[0].size();
+	unsigned int N = matrix.size();
+	unsigned int M = matrix[0].size();
 	int temp;
-	
 
-	for(int i=0;i<(int)(N/2);i++){
-		for(int j=0;j<M;j++){
+	for(unsigned int i = 0; i < (unsigned int) (N/2); i++){
+		for(unsigned int j = 0; j < M; j++){
 
 			//reflective swap
 			temp = matrix[i][j];
@@ -45,10 +44,10 @@ vector< vector<int> > reflect(vector< vector<int> > matrix){
 		}
 	}
 
-	for(int i=0;i<(int) (M/2);i++){
-		temp = matrix[(int) (N/2)][i];
-		matrix[(int) (N/2)][i] = matrix[(int) (N/2)][M-1-i];
-		matrix[(int) (N/2)][M-1-i] = temp;
+	for(unsigned int i = 0; i< (unsigned int) (M/2); i++){
+		temp = matrix[(unsigned int) (N/2)][i];
+		matrix[(unsigned int) (N/2)][i] = matrix[(unsigned int) (N/2)][M-1-i];
+		matrix[(unsigned int) (N/2)][M-1-i] = temp;
 	}
 
 	return matrix;
@@ -56,13 +55,13 @@ vector< vector<int> > reflect(vector< vector<int> > matrix){
 
 vector< vector<int> > pad_array(vector< vector<int> > img, vector< vector<int> > se, char opt){
 
-	vector< vector<int> > v( img.size() + (int)se.size()-1 );
+	vector< vector<int> > v( img.size() + se.size()-1 );
 
-	for(int i=0;i<v.size();i++){
-		for(int j=0;j<img[0].size()+se[0].size()-1;j++){
-			if(i >= (int) (se.size()/2) && i < img.size() + (int) (se.size()/2) && 
-			   j >= (int) (se[0].size()/2) && j < img[0].size() + (int) (se[0].size()/2) ){
-				v[i].push_back( img[i-(int)(se.size()/2)][j-(int)(se[0].size()/2)] );
+	for(unsigned int i = 0; i < v.size(); i++){
+		for(unsigned int j = 0; j < img[0].size() + se[0].size()-1; j++){
+			if(i >= (unsigned int) (se.size()/2) && i < img.size() + (unsigned int) (se.size()/2) && 
+			   j >= (unsigned int) (se[0].size()/2) && j < img[0].size() + (unsigned int) (se[0].size()/2) ){
+				v[i].push_back( img[i-(unsigned int)(se.size()/2)][j-(unsigned int)(se[0].size()/2)] );
 			}
 			else{
 				if(opt == 'd'){
@@ -72,7 +71,7 @@ vector< vector<int> > pad_array(vector< vector<int> > img, vector< vector<int> >
 					v[i].push_back(256);
 				}
 				else{
-					cout<<"Unsupported functionality\n";
+					cout << "Unsupported functionality\n";
 					exit(1);
 				}
 			}
@@ -83,15 +82,13 @@ vector< vector<int> > pad_array(vector< vector<int> > img, vector< vector<int> >
 }
 
 void print_image(vector< vector<int> > cp){
-	for(int i=0;i<cp.size();i++){
-		for(int j=0;j<cp[0].size();j++){
-			cout<<cp[i][j]<< " ";
+	for(unsigned int i = 0; i < cp.size(); i++){
+		for(unsigned int j=0; j < cp[0].size(); j++){
+			cout << cp[i][j] << " ";
 		}
-		cout<<endl;
+		cout << endl;
 	}
-	cout<<endl;
-
-	// cout<<cp.size()<<" "<<cp[0].size()<<endl;
+	cout << endl;
 }
 
 vector< vector<int> > dilation(vector< vector<int> > img, vector< vector<int> > se){
@@ -102,12 +99,12 @@ vector< vector<int> > dilation(vector< vector<int> > img, vector< vector<int> > 
 	
 	
 	///Erosion Process
-	for(int i=0;i<img.size();i++){
-		for(int j=0;j<img[0].size();j++){
-			max=-1;
-			for(int k=0;k<se.size();k++){
-				for(int l=0;l<se[0].size();l++){
-					if( se[k][l] == 1 && v[i+k][j+l]>max){
+	for(unsigned int i = 0; i < img.size(); i++){
+		for(unsigned int j = 0; j < img[0].size(); j++){
+			max = -1;
+			for(unsigned int k = 0; k < se.size(); k++){
+				for(unsigned int l = 0; l < se[0].size(); l++){
+					if(se[k][l] == 1 && v[i+k][j+l] > max){
 						max = v[i+k][j+l];
 					}
 				}
@@ -127,12 +124,12 @@ vector< vector<int> > erosion(vector< vector<int> > img, vector< vector<int> > s
 	
 	
 	///Erosion Process
-	for(int i=0;i<img.size();i++){
-		for(int j=0;j<img[0].size();j++){
-			min=256;
-			for(int k=0;k<se.size();k++){
-				for(int l=0;l<se[0].size();l++){
-					if( se[k][l] == 1 && v[i+k][j+l]<min){
+	for(unsigned int i = 0; i < img.size(); i++){
+		for(unsigned int j = 0; j < img[0].size(); j++){
+			min = 256;
+			for(unsigned int k = 0; k < se.size(); k++){
+				for(unsigned int l = 0; l < se[0].size(); l++){
+					if(se[k][l] == 1 && v[i+k][j+l] < min){
 						min = v[i+k][j+l];
 					}
 				}
@@ -150,29 +147,26 @@ vector< vector<int> > opening(vector< vector<int> > img, vector< vector<int> > s
 }
 
 vector< vector<int> > load_data(string filename){
-	int n,index=0;
+	int n, index=0;
 	vector< vector<int> > a;
 	ifstream in;
 
 	in.open(filename);
 	if(!in.is_open()){
-		cerr<<"Error opening file\n";
+		cerr << "Error opening file\n";
 		exit(1);
 	}
 
 	
 	a.push_back(vector<int>());
-	while(in>>n){
+	while(in >> n){
 		a[index].push_back(n);
 
 		if(in.peek() == '\n'){
 			index++;
 			a.push_back(vector<int>());
-			in.ignore();
 		}
-		else{
-			in.ignore();
-		}
+		in.ignore();
 	}
 
 	in.close();
@@ -188,23 +182,18 @@ int main(int argc, const char *argv[]) {
 
 	SE = load_data(argv[2]);
 	image = load_data(argv[3]);
-
-	// print_image(SE);
-	// print_image(image);
 	
-	
-	
-	if(strcmp(argv[1],"e")==0){
+	if(strcmp(argv[1],"e") == 0){
 		write_into_file(argv[4], erosion(image,SE));
 	}
-	else if(strcmp(argv[1],"d")==0){
+	else if(strcmp(argv[1],"d") == 0){
 		write_into_file(argv[4], dilation(image,SE));
 	}
-	else if(strcmp(argv[1],"o")==0){
+	else if(strcmp(argv[1],"o") == 0){
 		write_into_file(argv[4], opening(image,SE));
 	}
 	else{
-		cout<<"No optionality matches\nExiting...\n";
+		cout << "No optionality matches\nExiting...\n";
 		exit(1);
 	}
 
