@@ -8,6 +8,7 @@
 #include <opencv4/opencv2/highgui.hpp>
 
 using namespace std;
+using namespace cv;
 
 
 void write_into_file(string filename, vector< vector<int> > cp){
@@ -149,6 +150,10 @@ vector< vector<int> > opening(vector< vector<int> > img, vector< vector<int> > s
 	return dilation( erosion(img,se) , reflect(se) );
 }
 
+vector< vector<int> > closing(vector< vector<int> > img, vector< vector<int> > se){
+	return erosion( dilation(img,se) , reflect(se) );
+}
+
 vector< vector<int> > load_data(string filename){
 	int n, index=0;
 	vector< vector<int> > a;
@@ -184,9 +189,25 @@ void write_into_image(string filename, vector< vector<int> > cp){
 			vec.push_back(cp[i][j]);
 		}
 	}
-	cv::Mat grayImage(cp[0].size(), cp.size(), CV_8U, vec.data()); //check reverse of size position
+	cv::Mat grayImage(cp.size(), cp[0].size(), CV_8U, vec.data()); //check reverse of size position
 	filename.replace(filename.length() - 3, filename.length(), "png");
 	cv::imwrite(filename, grayImage);
+}
+
+vector< vector<int> > load_image(string filename){
+	cv::Mat img = imread(filename, IMREAD_GRAYSCALE);
+	int index=0;
+	vector< vector<int> > a;
+	
+	for(int i = 0; i < img.rows; i++, index++){
+		a.push_back(vector<int>());
+		for(int j = 0; j < img.cols; j++){
+			a[index].push_back(img.at<uchar>(i,j));
+		}
+
+	}
+
+	return a;
 }
 
 int main(int argc, const char *argv[]) {
@@ -194,17 +215,25 @@ int main(int argc, const char *argv[]) {
 
 
 	SE = load_data(argv[2]);
-	image = load_data(argv[3]);
+	if (strcmp(argv[3], "../input/noise.png") == 0 || strcmp(argv[3], "../input/gaps.png") == 0  || strcmp(argv[3], "../input/separate.png") == 0){
+		image = load_image(argv[3]);
+	}
+	else{
+		image = load_data(argv[3]);
+	}
 	
 	switch(argv[1][0]){
 		case 'e':
-			image = erosion (image,SE);
+			image = erosion (image, SE);
 			break;
 		case 'd':
-			image = dilation(image,SE);
+			image = dilation(image, SE);
 			break;
 		case 'o':
-			image = opening (image,SE);
+			image = opening (image, SE);
+			break;
+		case 'c':
+			image = closing (image, SE);
 			break;
 		default:
 			cout << "No optionality matches\nExiting...\n";
@@ -212,7 +241,7 @@ int main(int argc, const char *argv[]) {
 	}
 
 	write_into_file(argv[4], image);
-	if(strcmp(argv[3], "../input/f3.txt") == 0 || strcmp(argv[3], "../output/ef3_e3.txt") == 0 || strcmp(argv[3], "../output/ef3_e4.txt") == 0){
+	if(strcmp(argv[3], "../input/f3.txt") == 0 || strcmp(argv[3], "../output/ef3_e3.txt") == 0 || strcmp(argv[3], "../output/ef3_e4.txt") == 0 || strcmp(argv[3], "../input/noise.png") == 0 || strcmp(argv[3], "../input/gaps.png") == 0 || strcmp(argv[3], "../input/separate.png") == 0){
 		write_into_image(argv[4], image);
 	}
 

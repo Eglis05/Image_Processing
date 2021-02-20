@@ -1,4 +1,17 @@
-all: ex1 ex2 ex3 ex4 ex5 ex6 ex7 ex8 ex9 ex10 ex11 
+all: ex1 ex2 ex3 ex4 ex5 ex6 ex7 ex8 ex9 ex10 ex11 ex12 ex13 ex14 ex15
+
+ex15: compile
+	./executable o ../input/SE_separate.txt ../input/separate.png ../output/oseparate.txt
+
+ex14: compile
+	./executable c ../input/SE_noise.txt ../input/gaps.png ../output/cgaps.txt
+
+ex13: compile
+	./executable o ../input/SE_noise.txt ../input/noise.png ../output/onoise.txt
+
+ex12: compile
+	./executable o ../input/SE_asymmetric.txt ../input/f2.txt ../output/of2_asymmetric.txt
+	./executable o ../input/SE_asymmetric.txt ../input/f3.txt ../output/of3_asymmetric.txt
 
 ex11: compile ex5
 	./executable d ../input/SE5.txt ../output/ef3_e4.txt ../output/of3_o4.txt

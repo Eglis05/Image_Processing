@@ -1,0 +1,65 @@
+Experiment Nr 1:
+
+Used in the Experiment:
+I am using SE_asymmetric.txt found in the input folder as the SE for this experiment.
+For the input image I am using f2.txt because we can easily see the results of the opening and comment on it.
+The result is saved in of2_asymmetric.txt found in the output folder.
+Also I used f3.txt but it might be a bit harder to see in that big file. Result saved in of3_asymmetric.txt and in the of3.asymmetric.png file if you want to see it.
+
+Comments about the Experiment:
+Due to the choice of the SE we can see that the border on the right is completely made zero.
+This is due to the first when we apply erosion we just push everything to the right and then when we apply dilation we push them back to the left (because the SE will be rotated) but now the last row on the right was already lost so it will be replaced by the border values which are zero for dilation.
+And this is the artefact which was mentioned in the README file. We are losing pixels due to the SE being asymmetric and not behaving in the normal sense.
+
+
+
+Experiment Nr 2:
+
+Used in the Experiment:
+I am using SE_noise.txt found in the input folder as the SE for this experiment.
+For the input image I am using noise.png because it has a small bit of noise.
+Source for Image: My Computer Vision homework.
+The result is saved in onoise.png found in the output folder.
+
+Comments about the Experiment:
+We can see that there is some noise around the sudoku in the right and above.
+We use the SE and the opening function to remove those parts of the noise.
+Now we also strengthen the positions of the numbers and it could be easier to notice where they are.
+And later on we could use the first image to maybe read the number after the number is located as it should be easier in the second one.
+Note: In this experiment the noise is white and what we want is actually in black color.
+
+
+
+Experiment Nr 3:
+
+Used in the Experiment:
+I am using SE_noise.txt found in the input folder as the SE for this experiment.
+For the input image I am using gaps.png because it has small gaps in between.
+Source for Image: https://homepages.inf.ed.ac.uk/rbf/HIPR2/close.htm
+The result is saved in cgaps.png found in the output folder.
+
+Comments about the Experiment:
+We can see that there is some gaps in the first image and there might be some problems in detection or classification of the object.
+We use the SE and the closing function to fill those parts and not alter the image much.
+Now we have a perfectly filled image and we can start working on it.
+
+
+
+Experiment Nr 4:
+
+Used in the Experiment:
+I am using SE_separate.txt found in the input folder as the SE for this experiment.
+For the input image I am using separate.png because it has one small connection between two objects.
+Source for Image: https://www.google.com/search?q=separating+two+objects+opencv&sxsrf=ALeKk01166bt-yUbyiBcqiaudzJQSE-69g:1613851251050&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjkz6e0oPnuAhWPO-wKHTt0AS4Q_AUoAXoECA0QAw&biw=1920&bih=949#imgrc=HMKxNeS4aGwgIM
+The result is saved in oseparate.png found in the output folder.
+
+Comments about the Experiment:
+We can see that there is a connection in the first image and there might be some problems as we might count these two objects as one.
+We use the SE and the opening function to remove this connection without altering the image much.
+Now we have separated objects and we can start working on the boundaries.
+
+
+
+Statement of Contribution:
+Kristian Sterjo did most of the code in the src.cpp and Makefile. Finished the 11 first experiments.
+Eglis Balani finished the src.cpp by fixing an error and some warnings. Worked on the creation of the images in the output folder using opencv. Wrote this explanation file. Finished the 4 last experiments.
