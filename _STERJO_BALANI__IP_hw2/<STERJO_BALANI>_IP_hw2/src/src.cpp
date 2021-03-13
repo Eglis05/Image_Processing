@@ -41,7 +41,7 @@ int hmin = MAXIMUM;
 
 void print_image(vector< vector<int> > cp){
 	for(unsigned int i = 0; i < cp.size(); i++){
-		for(unsigned int j=0; j < cp[0].size(); j++){
+		for(unsigned int j=0; j < cp[i].size(); j++){
 			cout << cp[i][j] << " ";
 		}
 		cout << endl;
@@ -237,7 +237,7 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 				while (!fifo_queue.empty()) {
 					pixel pp = fifo_queue.front();
 					fifo_queue.pop();
-					vector< pixel > neighbors = neighborhood(pp, g, f1.size(), f1[0].size());
+					vector< pixel > neighbors = neighborhood(pp, g, f1.size()-1, f1[0].size());
 					for(int k = 0; k < (int) neighbors.size(); k++){
 						pixel ppp = neighbors[k];
 						if(f0[ppp.x][ppp.y] == mask){
