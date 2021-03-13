@@ -31,26 +31,11 @@ struct pixel{
 		y = b;
 	}
 
-	pixel(pixel const&) = default;
-
 	bool operator< (const pixel& p) const{
         return (value < p.value);
     }
-
-	pixel& operator=(pixel other){
-        std::swap(value, other.value);
-        std::swap(x, other.x);
-		std::swap(y, other.y);
-        return *this;
-    }
-
-	pixel& operator=(pixel&& other){
-		std::swap(value, other.value);
-        std::swap(x, other.x);
-		std::swap(y, other.y);
-        return *this;
-	}
 };
+
 
 int hmin = MAXIMUM;
 
@@ -180,7 +165,8 @@ vector< pixel > sort_pixels(vector< vector<int> > f1){
 		}
 	}
 
-	return std::sort( image.begin(), image.end());
+	std::sort(image.begin(), image.end());
+	return image;
 }
 
 vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
@@ -191,12 +177,12 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 
 	vector< pixel > sorted_pixels = sort_pixels(f1);
 
-	for(int j = 0, h = hmin; j < sorted_pixels.size(); h = sorted_pixels[min(j, sorted_pixels.size()-1)]){
-		for(int i = j; i < sorted_pixels.size() && sorted_pixels[i] == h; i++){
+	for(int j = 0, h = hmin; j < (int) sorted_pixels.size(); h = sorted_pixels[min(j, (int) sorted_pixels.size()-1)].value){
+		for(int i = j; i < (int) sorted_pixels.size() && sorted_pixels[i].value == h; i++){
 			pixel p = sorted_pixels[i];
 			f0[p.x][p.y] = mask;
 			vector< pixel > neighbors = neighborhood(p, g, f1.size(), f1[0].size());
-			for(int j = 0; j < neighbors.size(); j++){
+			for(int j = 0; j < (int) neighbors.size(); j++){
 				pixel pp = neighbors[j];
 				if(f0[pp.x][pp.y] > 0 || f0[pp.x][pp.y] == wshed){
 					f0[p.x][p.y] = inqueue;
@@ -206,9 +192,10 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 		}
 
 		while (!fifo_queue.empty()) {
-			pixel p = myqueue.pop();
+			pixel p = fifo_queue.front();
+			fifo_queue.pop();
 			vector< pixel > neighbors = neighborhood(p, g, f1.size(), f1[0].size());
-			for(int j = 0; j < neighbors.size(); j++){
+			for(int j = 0; j < (int) neighbors.size(); j++){
 				pixel pp = neighbors[j];
 				if(f0[pp.x][pp.y] > 0){
 					if(f0[p.x][p.y] == inqueue || (f0[p.x][p.y] == wshed && flag == true)){
@@ -239,7 +226,8 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 				fifo_queue.push(p);
 				f0[p.x][p.y] = current_label;
 				while (!fifo_queue.empty()) {
-					pixel pp = myqueue.pop();
+					pixel pp = fifo_queue.front();
+					fifo_queue.pop();
 					vector< pixel > neighbors = neighborhood(pp, g, f1.size(), f1[0].size());
 					for(int j = 0; j < neighbors.size(); j++){
 						pixel ppp = neighbors[j];
