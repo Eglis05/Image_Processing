@@ -39,6 +39,15 @@ struct pixel{
 
 int hmin = MAXIMUM;
 
+void print_image(vector< vector<int> > cp){
+	for(unsigned int i = 0; i < cp.size(); i++){
+		for(unsigned int j=0; j < cp[0].size(); j++){
+			cout << cp[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
 
 void write_into_file(string filename, vector< vector<int> > cp){
 	fstream fout;
@@ -79,7 +88,7 @@ vector< vector<int> > load_data(string filename){
 	while(in >> n){
 		a[index].push_back(n);
 
-		if(in.peek() == '\n'){
+		if(in.peek() == '\n' || in.peek() == '\r'){
 			hmin = min(*std::min_element(a[index].begin(), a[index].end()), hmin);
 			index++;
 			a.push_back(vector<int>());
@@ -130,7 +139,7 @@ vector< vector<int> > load_image(string filename){
 
 vector< vector<int> > initialize_f0(vector< vector<int> > f1){
 	vector< vector<int> > f0;
-	for(unsigned int i = 0; i < f1.size(); i++){
+	for(unsigned int i = 0; i < f1.size()-1; i++){
 		f0.push_back(vector<int>());
 		for(unsigned int j = 0; j < f1[i].size(); j++){
 			f0[i].push_back(init);
@@ -181,7 +190,7 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 		for(int i = j; i < (int) sorted_pixels.size() && sorted_pixels[i].value == h; i++){
 			pixel p = sorted_pixels[i];
 			f0[p.x][p.y] = mask;
-			vector< pixel > neighbors = neighborhood(p, g, f1.size(), f1[0].size());
+			vector< pixel > neighbors = neighborhood(p, g, f1.size()-1, f1[0].size());
 			for(int j = 0; j < (int) neighbors.size(); j++){
 				pixel pp = neighbors[j];
 				if(f0[pp.x][pp.y] > 0 || f0[pp.x][pp.y] == wshed){
@@ -194,9 +203,9 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 		while (!fifo_queue.empty()) {
 			pixel p = fifo_queue.front();
 			fifo_queue.pop();
-			vector< pixel > neighbors = neighborhood(p, g, f1.size(), f1[0].size());
-			for(int j = 0; j < (int) neighbors.size(); j++){
-				pixel pp = neighbors[j];
+			vector< pixel > neighbors = neighborhood(p, g, f1.size()-1, f1[0].size());
+			for(int i = 0; i < (int) neighbors.size(); i++){
+				pixel pp = neighbors[i];
 				if(f0[pp.x][pp.y] > 0){
 					if(f0[p.x][p.y] == inqueue || (f0[p.x][p.y] == wshed && flag == true)){
 						f0[p.x][p.y] = f0[pp.x][pp.y];
@@ -249,7 +258,7 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 int main(int argc, const char *argv[]) {
 	vector< vector<int> > image;
 
-	image = load_image(argv[1]);
+	image = load_data(argv[1]);
 	int g = atoi(argv[2]);
 
 	image = watershed_alg(image, g);
