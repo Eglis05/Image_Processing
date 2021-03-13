@@ -201,7 +201,7 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 					if(f0[p.x][p.y] == inqueue || (f0[p.x][p.y] == wshed && flag == true)){
 						f0[p.x][p.y] = f0[pp.x][pp.y];
 					}
-					else if(f0[p.x][p.y] > 0 && f0[p.x][p.y] != f0[pp.x][pp.y]{
+					else if(f0[p.x][p.y] > 0 && f0[p.x][p.y] != f0[pp.x][pp.y]){
 						f0[p.x][p.y] = wshed;
 						flag = false;
 					}
@@ -219,8 +219,8 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 			}
 		}
 
-		for(; j < sorted_pixels.size() && sorted_pixels[j] == h; j++){
-			pixel p = sorted_pixels[i];
+		for(; j < (int) sorted_pixels.size() && sorted_pixels[j].value == h; j++){
+			pixel p = sorted_pixels[j];
 			if(f0[p.x][p.y] == mask){
 				current_label += 1;
 				fifo_queue.push(p);
@@ -229,8 +229,8 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 					pixel pp = fifo_queue.front();
 					fifo_queue.pop();
 					vector< pixel > neighbors = neighborhood(pp, g, f1.size(), f1[0].size());
-					for(int j = 0; j < neighbors.size(); j++){
-						pixel ppp = neighbors[j];
+					for(int k = 0; k < (int) neighbors.size(); k++){
+						pixel ppp = neighbors[k];
 						if(f0[ppp.x][ppp.y] == mask){
 							fifo_queue.push(ppp);
 							f0[ppp.x][ppp.y] = current_label;
@@ -249,12 +249,12 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 int main(int argc, const char *argv[]) {
 	vector< vector<int> > image;
 
-	image = load_image(argv[2]);
-	int g = atoi(argv[3]);
+	image = load_image(argv[1]);
+	int g = atoi(argv[2]);
 
 	image = watershed_alg(image, g);
 
-	write_into_file(argv[4], image);
+	write_into_file(argv[3], image);
 
 	return 0;
 }
