@@ -189,7 +189,7 @@ void write_into_image(string filename, vector< vector<int> > cp){
 			vec.push_back(cp[i][j]);
 		}
 	}
-	cv::Mat grayImage(cp.size(), cp[0].size(), CV_8U, vec.data()); //check reverse of size position
+	cv::Mat grayImage(cp.size(), cp[0].size(), CV_8U, vec.data());
 	filename.replace(filename.length() - 3, filename.length(), "png");
 	cv::imwrite(filename, grayImage);
 }
