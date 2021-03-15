@@ -8,8 +8,8 @@
 #include <functional>
 #include <array>
 
-#include <opencv4/opencv2/opencv.hpp>
-#include <opencv4/opencv2/highgui.hpp>
+#include </usr/local/include/opencv4/opencv2/opencv.hpp>
+#include </usr/local/include/opencv4/opencv2/highgui.hpp>
 
 using namespace std;
 using namespace cv;
@@ -35,6 +35,89 @@ struct pixel{
         return (value < p.value);
     }
 };
+
+
+vector< vector<int> > pad_array(vector< vector<int> > img, vector< vector<int> > se, char opt){
+
+	vector< vector<int> > v( img.size() + se.size()-1 );
+
+	for(unsigned int i = 0; i < v.size(); i++){
+		for(unsigned int j = 0; j < img[0].size() + se[0].size()-1; j++){
+			if(i >= (unsigned int) (se.size()/2) && i < img.size() + (unsigned int) (se.size()/2) && 
+			   j >= (unsigned int) (se[0].size()/2) && j < img[0].size() + (unsigned int) (se[0].size()/2) ){
+				v[i].push_back( img[i-(unsigned int)(se.size()/2)][j-(unsigned int)(se[0].size()/2)] );
+			}
+			else{
+				if(opt == 'd'){
+					v[i].push_back(0);
+				}
+				else if(opt == 'e'){
+					v[i].push_back(255);
+				}
+				else{
+					cout << "Unsupported functionality\n";
+					exit(1);
+				}
+			}
+		}
+	}
+
+	return v;
+}
+
+
+vector< vector<int> > dilation(vector< vector<int> > img, vector< vector<int> > se){
+	int max = 0;
+	
+	vector< vector<int> > v = pad_array(img, se, 'd');
+	vector< vector<int> > cp = img;
+	
+	
+	///Erosion Process
+	for(unsigned int i = 0; i < img.size(); i++){
+		for(unsigned int j = 0; j < img[0].size(); j++){
+			max = 0;
+			for(unsigned int k = 0; k < se.size(); k++){
+				for(unsigned int l = 0; l < se[0].size(); l++){
+					if(se[k][l] == 1 && v[i+k][j+l] > max){
+						max = v[i+k][j+l];
+					}
+				}
+			}
+
+			cp[i][j] = max;
+		}
+	}
+	return cp;
+}
+
+vector< vector<int> > erosion(vector< vector<int> > img, vector< vector<int> > se){
+	int min = 255;
+
+	vector< vector<int> > v = pad_array(img, se, 'e');
+	vector< vector<int> > cp = img;
+	
+	
+	///Erosion Process
+	for(unsigned int i = 0; i < img.size(); i++){
+		for(unsigned int j = 0; j < img[0].size(); j++){
+			min = 255;
+			for(unsigned int k = 0; k < se.size(); k++){
+				for(unsigned int l = 0; l < se[0].size(); l++){
+					if(se[k][l] == 1 && v[i+k][j+l] < min){
+						min = v[i+k][j+l];
+					}
+				}
+			}
+
+			cp[i][j] = min;
+		}
+	}
+
+	return cp;
+}
+
+
 
 
 int hmin = MAXIMUM;
@@ -96,6 +179,7 @@ vector< vector<int> > load_data(string filename){
 		in.ignore();
 	}
 	// hmin = min(*std::min_element(a[index].begin(), a[index].end()), hmin); //not sure if needed
+	// In case of negative pixels
 	if (hmin < 0){
 		for(int i = 0; i < index; i++){
 			for(unsigned int j = 0; j < a[i].size(); j++){
@@ -258,7 +342,17 @@ vector< vector<int> > watershed_alg(vector< vector<int> > f1, int g){
 int main(int argc, const char *argv[]) {
 	vector< vector<int> > image;
 
-	image = load_data(argv[1]);
+
+	if(argc==5){
+		image = load_image(argv[1]);
+		vector< vector<int> > SE = {{1,1,1},{1,1,1},{1,1,1}};
+		//Applying opening
+		image = erosion(dilation(image, SE), SE);
+	}
+	else{
+		image = load_data(argv[1]);
+	}
+
 	int g = atoi(argv[2]);
 
 	image = watershed_alg(image, g);
