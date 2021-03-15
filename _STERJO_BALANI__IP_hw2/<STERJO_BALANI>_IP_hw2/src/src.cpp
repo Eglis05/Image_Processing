@@ -72,7 +72,7 @@ vector< vector<int> > dilation(vector< vector<int> > img, vector< vector<int> > 
 	vector< vector<int> > v = pad_array(img, se, 'd');
 	vector< vector<int> > cp = img;
 	
-	
+
 	///Erosion Process
 	for(unsigned int i = 0; i < img.size(); i++){
 		for(unsigned int j = 0; j < img[0].size(); j++){
@@ -196,7 +196,7 @@ vector< vector<int> > load_data(string filename){
 void write_into_image(string filename, vector< vector<int> > cp){
 	vector<uint8_t> vec;
 	for(unsigned int i = 0; i < cp.size(); i++){
-		for(unsigned int j = 0; j < cp[0].size(); j++){
+		for(unsigned int j = 0; j < cp[i].size(); j++){
 			vec.push_back(cp[i][j]);
 		}
 	}
@@ -343,11 +343,12 @@ int main(int argc, const char *argv[]) {
 	vector< vector<int> > image;
 
 
-	if(argc==5){
+	if(argc == 5){
 		image = load_image(argv[1]);
 		vector< vector<int> > SE = {{1,1,1},{1,1,1},{1,1,1}};
 		//Applying opening
 		image = erosion(dilation(image, SE), SE);
+		image.push_back(vector<int>());
 	}
 	else{
 		image = load_data(argv[1]);
