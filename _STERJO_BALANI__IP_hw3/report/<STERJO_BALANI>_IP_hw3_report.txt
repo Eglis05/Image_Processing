@@ -1,0 +1,18 @@
+First two experiment images were found by searching in google "random images" and choosing two from them.
+The last one was choosen by searching "one piece" and choosing one from the results.
+
+I created the two levels of pixel noise with the help of noise.py.
+This is not needed to redo again so I didnt add it in the makefile but added it in the src folder.
+The first level I just applied gaussian and in the second one I also added salt and paper.
+
+Then I choose some bin sizes for each of the experiments and 3 for the last experiment.
+I write the output of the mutual information into the output folder so that you wont have to recalculate it to see the graphs.
+If you want to recreate the output files before running "make" you first need to do "make clean".
+I created a plotting file so that it would just handle the plotting of the data in output folder.
+
+I dont know why the results are not as expected that they would be the extremum in the middle but it is somewhere more to the left.
+I guess we should have a small typo in the implementation as we checked it a couple of times but we got the same result.
+
+Statement of Contribution:
+Kristian Sterjo implemented the mutual information and the step movements in the Homework_3.cpp (and the functions needed for them).
+Eglis Balani finished the code by fixing some warnings. Worked on the experiments (including the functions done for the experiments) and creation of this report file.

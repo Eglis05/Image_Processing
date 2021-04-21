@@ -3,10 +3,18 @@
 #include <algorithm>
 #include <vector>
 #include <map>
+#include <iterator>
+
+#include <opencv4/opencv2/opencv.hpp>
+#include <opencv4/opencv2/highgui.hpp>
+
 #define NIL pmf.end()
-#define rows fig1.size()
-#define cols fig1[0].size()
+#define rows_fig (int)fig1.size()
+#define cols_fig (int)fig1[0].size()
+
 using namespace std;
+using namespace cv;
+
 typedef pair<float, float> x_y;
 
 
@@ -14,10 +22,10 @@ map< pair<float,float>, float > joint_pmf_2D(vector< vector<float> > fig1, vecto
 	map< pair<float,float>, float > pmf;
 	map< pair<float,float>, float >::iterator it;
 
-	float size_total = rows*cols;
+	float size_total = rows_fig*cols_fig;
 
-	for(int i = 0; i < rows; i++){
-		for(int j = 0; j < cols; j++){
+	for(int i = 0; i < rows_fig; i++){
+		for(int j = 0; j < cols_fig; j++){
 			x_y p( (int) fig1[i][j]/bin_size, (int) fig2[i][j]/bin_size);
 
 			if( (it = pmf.find(p)) == NIL){
@@ -39,10 +47,10 @@ map<float, float> pmf_1D(vector< vector<float> > fig1, int bin_size){
 	map<float, float> pmf;
 	map<float, float>::iterator it;
 
-	float size_total = rows*cols;
+	float size_total = rows_fig*cols_fig;
 
-	for(int i = 0; i < rows; i++){
-		for(int j = 0; j < cols; j++){
+	for(int i = 0; i < rows_fig; i++){
+		for(int j = 0; j < cols_fig; j++){
 			float p = (int) fig1[i][j]/bin_size;
 
 			if( (it = pmf.find(p)) == NIL){
@@ -65,7 +73,7 @@ vector< vector<float> > crop_left_right(int pixel_no, vector< vector<float> > im
 
 	if(beg > fin){cerr<<"Impossible cropping\n"; exit(1);}
 
-	for(int i = 0; i < img.size(); i++){
+	for(int i = 0; i < (int)img.size(); i++){
 		out.push_back( vector<float>() );
 		for(int j = beg; j < fin; j++){
 			out[i].push_back(img[i][j]);
@@ -107,7 +115,7 @@ vector<float> MI_n_steps(int steps, int bin_size, vector< vector<float> > img1, 
 
 	cp.resize(img2.size());
 
-	for(int index = 0; index != cp.size(); index++){
+	for(int index = 0; index != (int) cp.size(); index++){
 		cp[index].resize(img2[0].size());
 	}
 
@@ -117,8 +125,8 @@ vector<float> MI_n_steps(int steps, int bin_size, vector< vector<float> > img1, 
 	while(i != steps){
 
 
-		for(int j = 0; j < img2.size(); j++){
-			for(int k = 0; k < img2[0].size(); k++){
+		for(int j = 0; j < (int) img2.size(); j++){
+			for(int k = 0; k < (int) img2[0].size(); k++){
 				cp[j][k] = img1[j][k+i];
 			}
 		}
@@ -144,25 +152,44 @@ vector<float> MI_n_steps(int steps, int bin_size, vector< vector<float> > img1, 
 
 }
 
+vector< vector<float> > load_image_color(string filename, int choice){
+	cv::Mat img = imread(filename, cv::IMREAD_COLOR);
 
+	cv::Mat bgr[3];
+	cv::split(img, bgr);
 
-int main(){
+	img = bgr[choice];
+
+	int index = 0;
+	vector< vector<float> > a;
 	
-	////example unfinished
-	vector< vector<float> > f = {{1,2,3},{2,3,1},{1,1,3}};
-	vector< vector<float> > g = {{1,2,1},{1,3,3},{2,1,2}};
+	for(int i = 0; i < img.rows; i++, index++){
+		a.push_back(vector<float>());
+		for(int j = 0; j < img.cols; j++){
+			a[index].push_back(img.at<uchar>(i,j));
+		}
 
-	vector< vector<float> > h = crop_left_right(1,g);
-	cout<<MI_n_steps(3, 1, g, h)[2];
+	}
 
-	// for(int i=0;i<h.size();i++){
-	// 	for(int j=0;j<h[0].size();j++){
-	// 		cout<<h[i][j]<<" ";
-	// 	}
-	// 	cout<<endl;
-	// }
-	
+	return a;
+}
 
-	
+int main(int argc, const char *argv[]) {
 
+	vector< vector<float> > g, r;
+
+	g = load_image_color(argv[1], 1);
+	g = crop_left_right(1,g);
+	r = load_image_color(argv[1], 2);
+
+	int b = atoi(argv[2]);
+
+	std::ofstream output_file(argv[3]);
+    std::ostream_iterator<float> output_iterator(output_file, "\n");
+
+	vector<float> result = MI_n_steps(41, b, r, g);
+
+    copy(result.begin(), result.end(), output_iterator);
+
+	return 0;
 }
