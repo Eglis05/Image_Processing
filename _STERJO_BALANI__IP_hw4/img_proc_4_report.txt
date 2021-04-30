@@ -1,0 +1,40 @@
+WORKFLOW
+
+Our task is related with implementing a Convolutional Neural Network with the help of Keras to classify digits and garments both from the MNIST dataset.
+
+Firstly, an initial theoretical overview of Neural Networks and their associated training was studied. Sources:
+ 
+https://www.youtube.com/watch?v=Ilg3gGewQ5U&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=3&t=334s
+
+https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=1
+
+Afterwards, we dug deeper on the practical implementations following the instructions from  
+https://www.mlq.ai/convolutional-neural-network-python-keras/ and 
+https://nextjournal.com/gkoehler/digit-recognition-with-keras
+
+The results completely match the expected ones from the website. Figures fig1 and fig2.
+
+In order to inspect how the CNN works and how it depends on the correctness of data, a significant batch of the dataset was manipulated to show an erroneous label. Notably, the accuracy drops down and it can be viewed on figure fig3. Obviously for the rest of the experiments we would be continuing with the standard dataset.
+
+Saying this, a plethora of other parameters was tweaked such that a different behaviour is visualised.
+
+Fig4 depicts the results of changing the number of epochs (scanning over the whole dataset while training) from 12 to 20 and adding an additional convolutional layer yielding a positive change.
+
+Continuing the rest of the experiments with the unchanged number of new layers, a change in the first 2 parameters of the last layer is done. The convolutional layer's kernel size changes from (5,5) to (7,7).
+
+In the last experiment, the last three layers changed with the following parameters. 
+model.add(Conv2D(128, (5, 5), activation='relu'))
+model.add(Conv2D(256, (7, 7), activation='relu'))
+model.add(Conv2D(512, (11, 11), activation='linear'))
+
+What gets our attention is the change of the activation function from relu to linear and the accuracy yields evident improvements.
+
+
+TALKING POINTS:
+Problems in importing keras.
+Docker files.
+Problem in accuracy from what was stated.
+Mixed up to make problems in accuracy. Sigmoid activation + kernel sizes + dropout changes.
+Epoch 20 + Conv2d 256 3,3
+Conv2d 512 7,7
+Conv2d 128 5,5 + 256 7,7 + 512 11,11 linear
